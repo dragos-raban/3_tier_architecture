@@ -1,9 +1,18 @@
-#provider    
-    provider "aws" {
-
-      region = "us-west-2"
-
+#provider 
+terraform {
+  required_providers {
+    aws = {
+      source = "hashicorp/aws"
+      version = "5.74.0"
     }
+  }
+}
+
+provider "aws" {
+  # Configuration options
+}
+   
+
 #vpc
     resource "aws_vpc" "three-tier-vpc" {
 
