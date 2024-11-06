@@ -1,15 +1,17 @@
-#vpc    
+#provider    
     provider "aws" {
 
       region = "us-west-2"
 
     }
-
+#vpc
     resource "aws_vpc" "3-tier-vpc" {
 
-      cidr_block       = var.vpc_cidr
+      cidr_block       = "10.0.0.0/16"
 
-      instance_tenancy = "default"
+      enable_dns_support = true
+      
+      enable_dns_hostnames = true
 
       tags = {
 
@@ -20,114 +22,55 @@
     }
 #subnets
 
-    #public-subnet1 creation
+    #public-subnet creation
 
-    resource "aws_subnet" "public-subnet1" {
-
-      vpc_id                  = aws_vpc.3-tier-vpc.id
-
-      cidr_block              = var.subnet1_cidr
-
-      map_public_ip_on_launch = "false"
-
-      availability_zone       = "us-east-1a"
-
-      tags = {
-
-        Name = "public-subnet1"
-
-      }
-
-    }
-
-    #public-subnet2 creation
-
-    resource "aws_subnet" "public-subnet2" {
+    resource "aws_subnet" "public_subnet" {
 
       vpc_id                  = aws_vpc.3-tier-vpc.id
 
-      cidr_block              = var.subnet2_cidr
+      cidr_block              = "10.0.1.0/24"
 
-      map_public_ip_on_launch = "false"
+      map_public_ip_on_launch = "true"
 
-      availability_zone       = "us-east-1b"
+      availability_zone       = "us-west-2a"
 
       tags = {
 
-        Name = "public-subnet2"
+        Name = "public_subnet"
 
       }
 
     }
 
-    #private-subnet1 creation
 
-    resource "aws_subnet" "private-subnet1" {
+    #private-subnet creation
+
+    resource "aws_subnet" "private_subnet" {
 
       vpc_id            = aws_vpc.3-tier-vpc.id
 
-      cidr_block        = var.subnet3_cidr
+      cidr_block        = "10.0.2.0/24"
 
-      availability_zone = "us-east-1b"
+      availability_zone = "us-west-2a"
 
       tags = {
 
-        Name = "private-subnet1"
+        Name = "private_subnet"
 
       }
 
     }
+#internet gateway    
+resource "aws_internet_gateway" "gw" {
+  vpc_id = aws_vpc.main.id
+}
 
-    #private-subnet2 creation
+#nat gateway
+resource "aws_nat_gateway" "nat" {
+  allocation_id = aws_eip.nat.id
+  subnet_id     = aws_subnet.public_subnet.id
+}
 
-    resource "aws_subnet" "private-subnet2" {
-
-      vpc_id            = aws_vpc.3-tier-vpc.id
-
-      cidr_block        = var.subnet4_cidr
-
-      availability_zone = "us-east-1c"
-
-      tags = {
-
-        Name = "private-subnet2"
-
-      }
-
-    }
-
-    #private-subnet3 creation
-
-    resource "aws_subnet" "private-subnet3" {
-
-      vpc_id            = aws_vpc.3-tier-vpc.id
-
-      cidr_block        = var.subnet5_cidr
-
-      availability_zone = "us-east-1b"
-
-      tags = {
-
-        Name = "private-subnet3"
-
-      }
-
-    }
-
-    #private-subnet4 creation
-
-    resource "aws_subnet" "private-subnet4" {
-
-      vpc_id            = aws_vpc.3-tier-vpc.id
-
-      cidr_block        = var.subnet6_cidr
-
-      availability_zone = "us-east-1c"
-
-      tags = {
-
-        Name = "private-subnet4"
-
-      }
-
-    }    
+resource "aws_eip" "nat" {
+  vpc = true
+}
