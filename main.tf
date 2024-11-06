@@ -5,7 +5,7 @@
 
     }
 #vpc
-    resource "aws_vpc" "3-tier-vpc" {
+    resource "aws_vpc" "three-tier-vpc" {
 
       cidr_block       = "10.0.0.0/16"
 
@@ -15,7 +15,7 @@
 
       tags = {
 
-        Name = "3-tier-vpc"
+        Name = "three-tier-vpc"
 
       }
 
@@ -26,7 +26,7 @@
 
     resource "aws_subnet" "public_subnet" {
 
-      vpc_id                  = aws_vpc.3-tier-vpc.id
+      vpc_id                  = aws_vpc.three-tier-vpc.id
 
       cidr_block              = "10.0.1.0/24"
 
@@ -47,7 +47,7 @@
 
     resource "aws_subnet" "private_subnet" {
 
-      vpc_id            = aws_vpc.3-tier-vpc.id
+      vpc_id            = aws_vpc.three-tier-vpc.id
 
       cidr_block        = "10.0.2.0/24"
 
@@ -62,7 +62,7 @@
     }
 #internet gateway    
 resource "aws_internet_gateway" "gw" {
-  vpc_id = aws_vpc.main.id
+  vpc_id = aws_vpc.three-tier-vpc.id
 }
 
 #nat gateway
@@ -72,5 +72,5 @@ resource "aws_nat_gateway" "nat" {
 }
 
 resource "aws_eip" "nat" {
-  vpc = true
+  domain = "vpc"
 }

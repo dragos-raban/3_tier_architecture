@@ -1,7 +1,7 @@
 resource "aws_security_group" "web_sg" {
   name        = "web_sg"
   description = "Allow inbound HTTP/HTTPS traffic"
-  vpc_id      = aws_vpc.main.id
+  vpc_id      = aws_vpc.three-tier-vpc.id
 
   ingress {
     from_port   = 80
@@ -28,7 +28,7 @@ resource "aws_security_group" "web_sg" {
 resource "aws_security_group" "app_sg" {
   name        = "app_sg"
   description = "Allow traffic from Web tier"
-  vpc_id      = aws_vpc.main.id
+  vpc_id      = aws_vpc.three-tier-vpc.id
 
   ingress {
     from_port   = 80
@@ -48,7 +48,7 @@ resource "aws_security_group" "app_sg" {
 resource "aws_security_group" "db_sg" {
   name        = "db_sg"
   description = "Allow traffic from App tier"
-  vpc_id      = aws_vpc.main.id
+  vpc_id      = aws_vpc.three-tier-vpc.id
 
   ingress {
     from_port   = 3306
